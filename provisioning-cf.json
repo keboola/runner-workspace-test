@@ -1,0 +1,98 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Stack for deploying Runner Workspace Test (part of Runner tests)",
+    "Parameters": {
+        "KeboolaStack": {
+            "Type": "String",
+            "Description": "All resources will be tagged by this value."
+        },    	
+        "EcrRepositoryName": {
+            "Type": "String",
+            "Description": "Name of ECR repository",
+            "Default": "keboola.runner-workspace-test"
+        }
+    },
+    "Resources": {
+        "EcrRepository": {
+            "Type": "AWS::ECR::Repository",
+            "Properties": {
+                "RepositoryName": {
+                    "Ref": "EcrRepositoryName"
+                }
+            }
+        },
+        "DeployPolicy": {
+            "Type": "AWS::IAM::ManagedPolicy",
+            "Properties": {
+                "Description": {
+                    "Fn::Join": [
+                        " - ",
+                        [
+                            {
+                                "Ref": "KeboolaStack"
+                            },
+                            "Job Queue Daemon API Deployment"
+                        ]
+                    ]
+                },
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "AllowEcrPushPull",
+                            "Effect": "Allow",
+                            "Action": [
+                                "ecr:PutImage",
+                                "ecr:CompleteLayerUpload",
+                                "ecr:InitiateLayerUpload",
+                                "ecr:UploadLayerPart",
+                                "ecr:BatchCheckLayerAvailability",
+                                "ecr:BatchGetImage",
+                                "ecr:GetDownloadUrlForLayer"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::GetAtt": [
+                                        "EcrRepository",
+                                        "Arn"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Sid": "AllowEcrAuth",
+                            "Effect": "Allow",
+                            "Action": [
+                                "ecr:GetAuthorizationToken"
+                            ],
+                            "Resource": "*"
+                        }
+                    ]
+                }
+            }
+        },
+        "RunnerWorkspaceTestDeploy": {
+            "Type": "AWS::IAM::User",
+            "DeletionPolicy": "Delete",
+            "Properties": {
+                "ManagedPolicyArns": [
+                    {
+                        "Ref": "DeployPolicy"
+                    }
+                ]
+            },
+            "DependsOn": [
+                "DeployPolicy"
+            ]
+        }
+    },
+    "Outputs": {
+        "DeployUser": {
+            "Value": {
+                "Ref": "RunnerWorkspaceTestDeploy"
+            }
+        }
+    }
+}
+
+
