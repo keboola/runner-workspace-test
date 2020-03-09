@@ -16,13 +16,13 @@ class ComponentTest extends TestCase
     public function testRun(): void
     {
         $dbOptions = [
-            'host' => getenv('SNOWFLAKE_HOST'),
-            'port' => getenv('SNOWFLAKE_PORT'),
-            'warehouse' => getenv('SNOWFLAKE_WAREHOUSE'),
-            'database' => getenv('SNOWFLAKE_DATABASE'),
-            'schema' => getenv('SNOWFLAKE_SCHEMA'),
-            'user' => getenv('SNOWFLAKE_USER'),
-            'password' => getenv('SNOWFLAKE_PASSWORD'),
+            'host' => (string) getenv('SNOWFLAKE_HOST'),
+            'port' => (string) getenv('SNOWFLAKE_PORT'),
+            'warehouse' => (string) getenv('SNOWFLAKE_WAREHOUSE'),
+            'database' => (string) getenv('SNOWFLAKE_DATABASE'),
+            'schema' => (string) getenv('SNOWFLAKE_SCHEMA'),
+            'user' => (string) getenv('SNOWFLAKE_USER'),
+            'password' => (string) getenv('SNOWFLAKE_PASSWORD'),
         ];
 
         $config = [
