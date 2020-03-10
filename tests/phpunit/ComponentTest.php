@@ -58,7 +58,7 @@ class ComponentTest extends TestCase
         $connection->query('USE SCHEMA ' . QueryBuilder::quoteIdentifier($schema));
         $connection->query('DROP TABLE IF EXISTS "my-table-copy"');
         $connection->query(
-            'CREATE OR REPLACE TRANSIENT TABLE "my-table" (COLUMN1 VARCHAR(100), COLUMN2 NUMBER(38,0));'
+            'CREATE OR REPLACE TRANSIENT TABLE "my-table" (COLUMN1 VARCHAR(100), COLUMN2 NUMBER(38,0), "_timestamp" DATETIME);'
         );
         putenv('KBC_DATADIR=' . $temp->getTmpFolder());
         $component = new Component(new NullLogger());

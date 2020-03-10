@@ -37,6 +37,10 @@ class Component extends BaseComponent
                     'CREATE OR REPLACE TABLE ' . QueryBuilder::quoteIdentifier($target) .
                     ' AS SELECT * FROM ' . QueryBuilder::quoteIdentifier($source)
                 );
+                $connection->query(
+                    'ALTER TABLE ' . QueryBuilder::quoteIdentifier($target) .
+                    ' DROP COLUMN "_timestamp"'
+                );
                 $columns = $connection->fetchAll(
                     'SELECT COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = ' .
                     QueryBuilder::quote($source)
