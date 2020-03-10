@@ -17,7 +17,6 @@ class ComponentTest extends TestCase
     {
         $dbOptions = [
             'host' => (string) getenv('SNOWFLAKE_HOST'),
-            'port' => (string) getenv('SNOWFLAKE_PORT'),
             'warehouse' => (string) getenv('SNOWFLAKE_WAREHOUSE'),
             'database' => (string) getenv('SNOWFLAKE_DATABASE'),
             'schema' => (string) getenv('SNOWFLAKE_SCHEMA'),
@@ -34,16 +33,20 @@ class ComponentTest extends TestCase
             ],
             'storage' => [
                 'input' => [
-                     [
-                         'source' => 'in.c-test.test',
-                         'destination' => 'my-table',
-                     ],
+                    'tables' => [
+                         [
+                             'source' => 'in.c-test.test',
+                             'destination' => 'my-table',
+                         ],
+                    ],
                 ],
                 'output' => [
-                     [
-                         'source' => 'my-table-copy',
-                         'destination' => 'out.c-test.test',
-                     ],
+                    'tables' => [
+                         [
+                             'source' => 'my-table-copy',
+                             'destination' => 'out.c-test.test',
+                         ],
+                    ],
                 ],
             ],
         ];

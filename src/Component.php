@@ -26,13 +26,13 @@ class Component extends BaseComponent
         $operation = $config->getOperation();
         switch ($operation) {
             case 'copy':
-                if (empty($config->getStorage()['output'][0]['source']) ||
-                    empty($config->getStorage()['input'][0]['destination'])
+                if (empty($config->getStorage()['output']['tables'][0]['source']) ||
+                    empty($config->getStorage()['input']['tables'][0]['destination'])
                 ) {
                     throw new UserException('One input and output mapping is required.');
                 }
-                $target = $config->getStorage()['output'][0]['source'];
-                $source = $config->getStorage()['input'][0]['destination'];
+                $target = $config->getStorage()['output']['tables'][0]['source'];
+                $source = $config->getStorage()['input']['tables'][0]['destination'];
                 $connection->query(
                     'CREATE OR REPLACE TABLE ' . QueryBuilder::quoteIdentifier($target) .
                     ' AS SELECT * FROM ' . QueryBuilder::quoteIdentifier($source)
