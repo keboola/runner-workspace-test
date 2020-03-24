@@ -6,7 +6,17 @@ services:
 before_script:
   - docker -v
   - docker build -t $APP_IMAGE .
-  - docker run $APP_IMAGE composer ci
+  - docker run
+    -e SNOWFLAKE_HOST
+    -e SNOWFLAKE_PORT
+    -e SNOWFLAKE_WAREHOUSE
+    -e SNOWFLAKE_DATABASE
+    -e SNOWFLAKE_SCHEMA
+    -e SNOWFLAKE_USER
+    -e SNOWFLAKE_PASSWORD
+    -e KBC_RUNID
+    $APP_IMAGE
+    composer ci
 
 deploy:
   provider: script
