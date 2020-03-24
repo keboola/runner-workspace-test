@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/keboola/runner-workspace-test.svg?branch=master)](https://travis-ci.com/keboola/runner-workspace-test)
 
-Component for testing runner input & output mapping with workspaces.
+Component for testing runner input & output mapping with workspaces. This component is not for production use, it is deployed only to testing.
 
 # Usage
 
