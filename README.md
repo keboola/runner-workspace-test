@@ -44,7 +44,7 @@ Create a configuration with workspace authorization, input mapping and operation
 Run the component `php src\run.php`.
 
 ## Development
- 
+
 Clone this repository and init the workspace with following command:
 
 ```
