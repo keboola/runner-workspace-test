@@ -60,7 +60,7 @@ workspace credentials will do. Run the test suite using this command:
 ```
 docker-compose run --rm dev composer tests
 ```
- 
+
 # Integration
 
 For information about deployment and integration with KBC, please refer to the [deployment section of developers documentation](https://developers.keboola.com/extend/component/deployment/) 
