@@ -17,7 +17,7 @@ class ConfigDefinition extends BaseConfigDefinition
         $parametersNode
             ->children()
                 ->scalarNode('operation')
-                    ->validate()->ifnotinarray(['copy'])->thenInvalid('Allowed operations are: "copy".')
+                    ->validate()->ifnotinarray(['copy', 'copy-snowflake', 'copy-synapse'])->thenInvalid('Allowed operations are: "copy".')
                     ->end()
                 ->end()
             ->end()

@@ -6,6 +6,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG SNOWFLAKE_ODBC_VERSION=2.21.0
 ARG SNOWFLAKE_GPG_KEY=EC218558EABB25A1
 
+ARG SQLSRV_VERSION=5.8.0
+
 ENV LANGUAGE=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
@@ -29,6 +31,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         debsig-verify \
         dirmngr \
         gpg-agent \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update -q && ACCEPT_EULA=Y apt-get install -y --no-install-recommends \
+        msodbcsql17 \        
 	&& rm -r /var/lib/apt/lists/* \
 	&& sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
 	&& locale-gen \
@@ -49,6 +55,11 @@ RUN set -ex; \
     docker-php-ext-configure odbc --with-unixODBC=shared,/usr; \
     docker-php-ext-install odbc; \
     docker-php-source delete
+
+# Synapse ODBC
+RUN pecl install sqlsrv-$SQLSRV_VERSION pdo_sqlsrv-$SQLSRV_VERSION \
+    && docker-php-ext-enable sqlsrv pdo_sqlsrv \
+    && docker-php-source delete
 
 ## install snowflake drivers
 COPY ./docker/snowflake/generic.pol /etc/debsig/policies/$SNOWFLAKE_GPG_KEY/generic.pol
