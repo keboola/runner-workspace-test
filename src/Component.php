@@ -102,7 +102,8 @@ class Component extends BaseComponent
                     . QueryBuilder::quoteIdentifier($source) . ')'
                 );
                 $connection->query(
-                    'ALTER TABLE ' . QueryBuilder::quoteIdentifier($authorization['schema']) . '.' . QueryBuilder::quoteIdentifier($target) .
+                    'ALTER TABLE ' . QueryBuilder::quoteIdentifier($authorization['schema']) .
+                    '.' . QueryBuilder::quoteIdentifier($target) .
                     ' DROP COLUMN "_timestamp"'
                 );
                 $columns = $connection->fetchAll(
