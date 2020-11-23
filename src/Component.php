@@ -49,7 +49,10 @@ class Component extends BaseComponent
 
     private function getAbsConnection(): BlobRestProxy
     {
-        $blobClient = BlobRestProxy::createBlobService($this->connectionString);
+        /** @var Config $config */
+        $config = $this->getConfig();
+        $authorization = $config->getAuthorization()['workspace'];
+        $blobClient = BlobRestProxy::createBlobService($authorization['connectionString']);
         $blobClient->pushMiddleware(RetryMiddlewareFactory::create());
         return $blobClient;
     }
