@@ -6,10 +6,10 @@ Component for testing runner input & output mapping with workspaces. This compon
 
 # Usage
 
-Create a configuration with workspace authorization, input mapping and operation (only allowed value is `copy`). 
+Create a configuration with workspace authorization, input and output mapping, and operation (allowed values are `copy`, `copy-snowflake`, `copy-synapse` and `copy-abs`).
 
 ```
-{     
+{
     "authorization": {
          "workspace": {
             "host": "xxxx.snowflakecomputing.com",
@@ -54,7 +54,7 @@ docker-compose build
 docker-compose run --rm dev composer install --no-scripts
 ```
 
-Set environment variables in `.env` file (see `.env.template`) containing Snowflake credentials. Standard 
+Set environment variables in `.env` file (see `.env.template`) containing Snowflake credentials. Standard
 workspace credentials will do. Run the test suite using this command:
 
 ```
@@ -63,4 +63,4 @@ docker-compose run --rm dev composer tests
 
 # Integration
 
-For information about deployment and integration with KBC, please refer to the [deployment section of developers documentation](https://developers.keboola.com/extend/component/deployment/) 
+For information about deployment and integration with KBC, please refer to the [deployment section of developers documentation](https://developers.keboola.com/extend/component/deployment/)

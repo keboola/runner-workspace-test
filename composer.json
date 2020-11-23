@@ -6,11 +6,13 @@
         "php": "^7.4",
         "doctrine/dbal": "^2.10",
         "keboola/db-adapter-snowflake": "^1.0",
-        "keboola/php-component": "^8.0"
+        "keboola/php-component": "^8.0",
+        "microsoft/azure-storage-blob": "^1.4"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.0",
         "keboola/coding-standard": ">=7.0.2",
+        "keboola/csv": "^2.2.1",
         "keboola/php-temp": "^2.0",
         "phpstan/phpstan": "^0.12.14",
         "phpunit/phpunit": "^9.0",
