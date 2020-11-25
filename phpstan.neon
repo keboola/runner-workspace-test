@@ -1,3 +1,4 @@
 parameters:
     ignoreErrors:
         - '#Cannot call method end\(\) on Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface\|null.#'
+        - '#Unable to resolve the template type T in call to method static method Doctrine\\DBAL\\DriverManager::getConnection\(\)#'

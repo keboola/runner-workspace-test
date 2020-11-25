@@ -10,8 +10,11 @@ use Keboola\Component\BaseComponent;
 use Keboola\Component\Manifest\ManifestManager;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use Keboola\Component\UserException;
+use Keboola\Csv\CsvReader;
 use Keboola\SnowflakeDbAdapter\Connection;
 use Keboola\SnowflakeDbAdapter\QueryBuilder;
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Common\Middlewares\RetryMiddlewareFactory;
 
 class Component extends BaseComponent
 {
@@ -42,6 +45,16 @@ class Component extends BaseComponent
             'dbname' => $authorization['database'],
         ]);
         return $connection;
+    }
+
+    private function getAbsConnection(): BlobRestProxy
+    {
+        /** @var Config $config */
+        $config = $this->getConfig();
+        $authorization = $config->getAuthorization()['workspace'];
+        $blobClient = BlobRestProxy::createBlobService($authorization['connectionString']);
+        $blobClient->pushMiddleware(RetryMiddlewareFactory::create());
+        return $blobClient;
     }
 
     protected function run(): void
@@ -118,6 +131,25 @@ class Component extends BaseComponent
                     },
                     $columns
                 );
+                $manifestManager = new ManifestManager($this->getDataDir());
+                $options = new OutTableManifestOptions();
+                $options->setColumns($columns);
+                $manifestManager->writeTableManifest($target  . '.manifest', $options);
+                break;
+            case 'copy-abs':
+                if (empty($config->getStorage()['output']['tables'][0]['source']) ||
+                    empty($config->getStorage()['input']['tables'][0]['destination'])
+                ) {
+                    throw new UserException('One input and output mapping is required.');
+                }
+                $target = $config->getStorage()['output']['tables'][0]['source'];
+                $source = $config->getStorage()['input']['tables'][0]['destination'];
+                $authorization = $config->getAuthorization()['workspace'];
+                $blobClient = $this->getAbsConnection();
+                $blobClient->copyBlob($authorization['container'], $target, $authorization['container'], $source);
+                $blobResult = $blobClient->getBlob($authorization['container'], $source);
+                $csvReader = new CsvReader($blobResult->getContentStream());
+                $columns = $csvReader->getHeader();
                 $manifestManager = new ManifestManager($this->getDataDir());
                 $options = new OutTableManifestOptions();
                 $options->setColumns($columns);
