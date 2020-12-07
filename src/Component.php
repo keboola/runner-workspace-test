@@ -162,11 +162,9 @@ class Component extends BaseComponent
                 $authorization = $config->getAuthorization()['workspace'];
                 $blobClient = $this->getAbsConnection();
                 $blobList = $blobClient->listBlobs($authorization['container']);
-                $blobs = [];
                 foreach ($blobList->getBlobs() as $blob) {
-                    $blobs[] = $blob->getName();
+                    $this->getLogger()->info($blob->getName());
                 }
-                $this->getLogger()->info(json_encode($blobs));
                 break;
             default:
                 throw new UserException('Invalid operation');
