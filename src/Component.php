@@ -155,6 +155,14 @@ class Component extends BaseComponent
                 $options->setColumns($columns);
                 $manifestManager->writeTableManifest($target  . '.manifest', $options);
                 break;
+            case 'list-abs':
+                $authorization = $config->getAuthorization()['workspace'];
+                $blobClient = $this->getAbsConnection();
+                $blobList = $blobClient->listBlobs($authorization['container']);
+                foreach ($blobList->getBlobs() as $blob) {
+                    $this->getLogger()->info($blob->getName());
+                }
+                break;
             default:
                 throw new UserException('Invalid operation');
         }
