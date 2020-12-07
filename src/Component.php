@@ -156,9 +156,6 @@ class Component extends BaseComponent
                 $manifestManager->writeTableManifest($target  . '.manifest', $options);
                 break;
             case 'list-abs':
-                if (empty($config->getStorage()['input']['files'][0])) {
-                    throw new UserException('One input file mapping is required.');
-                }
                 $authorization = $config->getAuthorization()['workspace'];
                 $blobClient = $this->getAbsConnection();
                 $blobList = $blobClient->listBlobs($authorization['container']);
