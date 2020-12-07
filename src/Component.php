@@ -166,7 +166,7 @@ class Component extends BaseComponent
                 foreach ($blobList->getBlobs() as $blob) {
                     $blobs[] = $blob->getName();
                 }
-                $this->getLogger()->info($this->json($blobs));
+                $this->getLogger()->info(json_encode($blobs));
                 break;
             default:
                 throw new UserException('Invalid operation');
