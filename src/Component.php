@@ -155,6 +155,19 @@ class Component extends BaseComponent
                 $options->setColumns($columns);
                 $manifestManager->writeTableManifest($target  . '.manifest', $options);
                 break;
+            case 'list-abs':
+                if (empty($config->getStorage()['input']['files'][0])) {
+                    throw new UserException('One input file mapping is required.');
+                }
+                $authorization = $config->getAuthorization()['workspace'];
+                $blobClient = $this->getAbsConnection();
+                $blobList = $blobClient->listBlobs($authorization['container']);
+                $blobs = [];
+                foreach ($blobList->getBlobs() as $blob) {
+                    $blobs[] = $blob->getName();
+                }
+                return $this->json($blobs);
+                break;
             default:
                 throw new UserException('Invalid operation');
         }
