@@ -6,7 +6,7 @@ Component for testing runner input & output mapping with workspaces. This compon
 
 # Usage
 
-Create a configuration with workspace authorization, input and output mapping, and operation (allowed values are `copy`, `copy-snowflake`, `copy-synapse` and `copy-abs`).
+Create a configuration with workspace authorization, input and output mapping, and operation (allowed values are `copy`, `copy-snowflake`, `copy-synapse`, `copy-abs`, `list-abs`).
 
 ```
 {
