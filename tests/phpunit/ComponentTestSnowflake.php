@@ -6,6 +6,8 @@ namespace Keboola\RunnerWorkspaceTest\Tests;
 
 use Keboola\SnowflakeDbAdapter\Connection;
 use Keboola\SnowflakeDbAdapter\QueryBuilder;
+use Keboola\StorageApi\Client;
+use Keboola\StorageApi\Workspaces;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -13,15 +15,36 @@ use Keboola\RunnerWorkspaceTest\Component;
 
 class ComponentTestSnowflake extends TestCase
 {
+    private array $workspace;
+    private Client $client;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->client = new Client([
+            'url' => (string) getenv('SNOWFLAKE_STORAGE_API_URL'),
+            'token' => (string) getenv('SNOWFLAKE_STORAGE_API_TOKEN'),
+        ]);
+        $workspaces = new Workspaces($this->client);
+        $this->workspace = $workspaces->createWorkspace(['backend' => 'snowflake']);
+    }
+
+    public function tearDown(): void
+    {
+        $workspaces = new Workspaces($this->client);
+        $workspaces->deleteWorkspace($this->workspace['id']);
+        parent::tearDown();
+    }
+
     public function testRun(): void
     {
         $dbOptions = [
-            'host' => (string) getenv('SNOWFLAKE_HOST'),
-            'warehouse' => (string) getenv('SNOWFLAKE_WAREHOUSE'),
-            'database' => (string) getenv('SNOWFLAKE_DATABASE'),
-            'schema' => (string) getenv('SNOWFLAKE_SCHEMA'),
-            'user' => (string) getenv('SNOWFLAKE_USER'),
-            'password' => (string) getenv('SNOWFLAKE_PASSWORD'),
+            'host' => (string) $this->workspace['connection']['host'],
+            'warehouse' => (string) $this->workspace['connection']['warehouse'],
+            'database' => (string) $this->workspace['connection']['database'],
+            'schema' => (string) $this->workspace['connection']['schema'],
+            'user' => (string) $this->workspace['connection']['user'],
+            'password' => (string) $this->workspace['connection']['password'],
         ];
 
         $config = [

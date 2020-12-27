@@ -15,7 +15,6 @@ use Psr\Log\Test\TestLogger;
 class ComponentTestAbs extends TestCase
 {
     private array $workspace;
-
     private Client $client;
 
     public function setUp(): void
@@ -77,7 +76,7 @@ class ComponentTestAbs extends TestCase
         $blob = $blobClient->getBlob($authorization['container'], 'data/out/tables/my-table-copy.csv');
         $data = stream_get_contents($blob->getContentStream());
         self::assertEquals("\"first column\",\"second column\"\n\"1\",\"2\"", $data);
-        $data = file_get_contents($temp->getTmpFolder() . '/out/tables/my-table-copy.csv.manifest');
+        $data = (string) file_get_contents($temp->getTmpFolder() . '/out/tables/my-table-copy.csv.manifest');
         self::assertEquals(
             [
                 'columns' => [
@@ -172,7 +171,7 @@ class ComponentTestAbs extends TestCase
         $data = stream_get_contents($blob->getContentStream());
         self::assertEquals('some-data', $data);
         $blob = $blobClient->getBlob($authorization['container'], 'data/out/files/my-file.manifest');
-        $data = stream_get_contents($blob->getContentStream());
+        $data = (string) stream_get_contents($blob->getContentStream());
         self::assertEquals(
             [
                 'is_permanent' => true,
