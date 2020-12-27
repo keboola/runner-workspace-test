@@ -52,7 +52,7 @@ class ComponentSnowflakeTest extends TestCase
                 'workspace' => $dbOptions,
             ],
             'parameters' => [
-                'operation' => 'copy-synapse',
+                'operation' => 'copy',
             ],
             'storage' => [
                 'input' => [
