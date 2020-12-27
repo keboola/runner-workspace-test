@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Keboola\RunnerWorkspaceTest\Component;
 use Psr\Log\Test\TestLogger;
 
-class ComponentTestAbs extends TestCase
+class ComponentAbsTest extends TestCase
 {
     private array $workspace;
     private Client $client;

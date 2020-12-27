@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Keboola\RunnerWorkspaceTest\Component;
 
-class ComponentTestSnowflake extends TestCase
+class ComponentSnowflakeTest extends TestCase
 {
     private array $workspace;
     private Client $client;

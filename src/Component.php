@@ -109,21 +109,14 @@ class Component extends BaseComponent
                 $connection = $this->getSynapseConnection();
                 $config = $this->getConfig();
                 $authorization = $config->getAuthorization()['workspace'];
-                $connection->query(
+                $connection->executeQuery(
                     'CREATE TABLE ' . QueryBuilder::quoteIdentifier($authorization['schema']) . '.'
                     . QueryBuilder::quoteIdentifier($target) .
                     ' WITH (DISTRIBUTION = ROUND_ROBIN) ' .
                     ' AS (SELECT * FROM ' . QueryBuilder::quoteIdentifier($authorization['schema']) . '.'
                     . QueryBuilder::quoteIdentifier($source) . ')'
                 );
-                /*
-                $connection->query(
-                    'ALTER TABLE ' . QueryBuilder::quoteIdentifier($authorization['schema']) .
-                    '.' . QueryBuilder::quoteIdentifier($target) .
-                    ' DROP COLUMN "_timestamp"'
-                );
-                */
-                $columns = $connection->fetchAll(
+                $columns = $connection->fetchAllAssociative(
                     'SELECT COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = ' .
                     QueryBuilder::quote($target)
                 );
