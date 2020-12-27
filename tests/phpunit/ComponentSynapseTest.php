@@ -56,7 +56,7 @@ class ComponentSynapseTest extends TestCase
                     'password' => (string) $this->workspace['connection']['password'],
                     'user' => (string) $this->workspace['connection']['user'],
                     'dbname' => (string) $this->workspace['connection']['database'],
-                ]
+                ],
             ],
             'parameters' => [
                 'operation' => 'copy',
