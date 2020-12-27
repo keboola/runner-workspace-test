@@ -78,8 +78,8 @@ class ComponentSynapseTest extends TestCase
         file_put_contents($temp->getTmpFolder() . '/config.json', json_encode($config));
         $connection->executeQuery(
             'CREATE TABLE ' . QueryBuilder::quoteIdentifier($schema) . '."my-table"' .
-            ' (COLUMN1 VARCHAR(100), COLUMN2 NUMBER(38,0))'
-            ' WITH (DISTRIBUTION = ROUND_ROBIN) ' .
+            ' (COLUMN1 VARCHAR(100), COLUMN2 NUMBER(38,0))' .
+            ' WITH (DISTRIBUTION = ROUND_ROBIN) '
         );
         putenv('KBC_DATADIR=' . $temp->getTmpFolder());
         $component = new Component(new NullLogger());
