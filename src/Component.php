@@ -194,7 +194,11 @@ class Component extends BaseComponent
                     'is_permanent' => true,
                     'tags' => ['foo', 'bar'],
                 ];
-                $blobClient->createBlockBlob($authorization['container'], 'data/out/files/' . $fileName . '.manifest', json_encode($manifestData));
+                $blobClient->createBlockBlob(
+                    $authorization['container'],
+                    'data/out/files/' . $fileName . '.manifest',
+                    json_encode($manifestData)
+                );
                 break;
             default:
                 throw new UserException('Invalid operation');
