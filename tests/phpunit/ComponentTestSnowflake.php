@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Keboola\RunnerWorkspaceTest\Component;
 
-class ComponentTest extends TestCase
+class ComponentTestSnowflake extends TestCase
 {
     public function testRun(): void
     {

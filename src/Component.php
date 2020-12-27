@@ -10,10 +10,12 @@ use Keboola\Component\BaseComponent;
 use Keboola\Component\Manifest\ManifestManager;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use Keboola\Component\UserException;
+use Keboola\Csv\CsvFile;
 use Keboola\Csv\CsvReader;
 use Keboola\SnowflakeDbAdapter\Connection;
 use Keboola\SnowflakeDbAdapter\QueryBuilder;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Blob\Models\CopyBlobOptions;
 use MicrosoftAzure\Storage\Common\Middlewares\RetryMiddlewareFactory;
 
 class Component extends BaseComponent
@@ -142,18 +144,24 @@ class Component extends BaseComponent
                 ) {
                     throw new UserException('One input and output mapping is required.');
                 }
-                $target = $config->getStorage()['output']['tables'][0]['source'];
-                $source = $config->getStorage()['input']['tables'][0]['destination'];
+                $target = 'data/out/tables/' . $config->getStorage()['output']['tables'][0]['source'];
+                $source = 'data/in/tables/' . $config->getStorage()['input']['tables'][0]['destination'];
                 $authorization = $config->getAuthorization()['workspace'];
                 $blobClient = $this->getAbsConnection();
-                $blobClient->copyBlob($authorization['container'], $target, $authorization['container'], $source);
-                $blobResult = $blobClient->getBlob($authorization['container'], $source);
-                $csvReader = new CsvReader($blobResult->getContentStream());
+                $blob = $blobClient->getBlob($authorization['container'], $source);
+                $blobClient->createBlockBlob($authorization['container'], $target, $blob->getContentStream());
+                $blob = $blobClient->getBlob($authorization['container'], $source);
+                $data = stream_get_contents($blob->getContentStream());
+                file_put_contents($this->getDataDir() . '/tmp.csv', $data);
+                $csvReader = new CsvFile($this->getDataDir() . '/tmp.csv');
                 $columns = $csvReader->getHeader();
                 $manifestManager = new ManifestManager($this->getDataDir());
                 $options = new OutTableManifestOptions();
                 $options->setColumns($columns);
-                $manifestManager->writeTableManifest($target  . '.manifest', $options);
+                $manifestManager->writeTableManifest(
+                    $config->getStorage()['output']['tables'][0]['source']  . '.manifest',
+                    $options
+                );
                 break;
             case 'list-abs':
                 $authorization = $config->getAuthorization()['workspace'];
@@ -162,6 +170,31 @@ class Component extends BaseComponent
                 foreach ($blobList->getBlobs() as $blob) {
                     $this->getLogger()->info($blob->getName());
                 }
+                break;
+            case 'dump-abs':
+                $authorization = $config->getAuthorization()['workspace'];
+                $blobClient = $this->getAbsConnection();
+                $blobList = $blobClient->listBlobs($authorization['container']);
+                foreach ($blobList->getBlobs() as $blob) {
+                    $this->getLogger()->info($blob->getName());
+                    $blobData = $blobClient->getBlob($authorization['container'], $blob->getName());
+                    $data = stream_get_contents($blobData->getContentStream());
+                    $this->getLogger()->info('Data: ' . $data);
+                }
+                break;
+            case 'create-abs':
+                if (empty($config->getStorage()['output']['files'][0]['source'])) {
+                    throw new UserException('One output mapping is required.');
+                }
+                $fileName = $config->getStorage()['output']['files'][0]['source'];
+                $authorization = $config->getAuthorization()['workspace'];
+                $blobClient = $this->getAbsConnection();
+                $blobClient->createBlockBlob($authorization['container'], 'data/out/files/' . $fileName, 'some-data');
+                $manifestData = [
+                    'is_permanent' => true,
+                    'tags' => ['foo', 'bar'],
+                ];
+                $blobClient->createBlockBlob($authorization['container'], 'data/out/files/' . $fileName . '.manifest', json_encode($manifestData));
                 break;
             default:
                 throw new UserException('Invalid operation');
