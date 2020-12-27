@@ -176,10 +176,7 @@ class Component extends BaseComponent
                 }
                 break;
             case 'create-abs':
-                if (empty($config->getStorage()['output']['files'][0]['source'])) {
-                    throw new UserException('One output mapping is required.');
-                }
-                $fileName = $config->getStorage()['output']['files'][0]['source'];
+                $fileName = $config->getStorage()['output']['files'][0]['source'] ?? 'my-file.dat';
                 $authorization = $config->getAuthorization()['workspace'];
                 $blobClient = $this->getAbsConnection();
                 $blobClient->createBlockBlob($authorization['container'], 'data/out/files/' . $fileName, 'some-data');
