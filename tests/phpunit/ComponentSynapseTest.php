@@ -50,7 +50,13 @@ class ComponentSynapseTest extends TestCase
 
         $config = [
             'authorization' => [
-                'workspace' => $this->workspace['connection'],
+                'workspace' => [
+                    'host' => (string) $this->workspace['connection']['host'],
+                    'port' => 1433,
+                    'password' => (string) $this->workspace['connection']['password'],
+                    'user' => (string) $this->workspace['connection']['user'],
+                    'dbname' => (string) $this->workspace['connection']['database'],
+                ]
             ],
             'parameters' => [
                 'operation' => 'copy',
