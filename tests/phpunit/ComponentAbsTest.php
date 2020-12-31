@@ -217,7 +217,7 @@ class ComponentAbsTest extends TestCase
         $blob = $blobClient->getBlob($authorization['container'], 'data/out/tables/my-table.csv');
         $data = stream_get_contents($blob->getContentStream());
         self::assertEquals("first,second\n1a,2b", $data);
-        $data = file_get_contents($temp->getTmpFolder() . '/out/tables/my-table.csv.manifest');
+        $data = (string) file_get_contents($temp->getTmpFolder() . '/out/tables/my-table.csv.manifest');
         self::assertEquals(
             [
                 'primary_key' => ['first'],
