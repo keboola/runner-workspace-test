@@ -202,7 +202,7 @@ class ComponentAbsTest extends TestCase
                     'tables' => [
                         [
                             'source' => 'my-table.csv',
-                            'destination' => 'out.c-test-bucket.test-table'
+                            'destination' => 'out.c-test-bucket.test-table',
                         ],
                     ],
                 ],
