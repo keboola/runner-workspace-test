@@ -175,7 +175,7 @@ class Component extends BaseComponent
                     $this->getLogger()->info('Data: ' . $data);
                 }
                 break;
-            case 'create-abs':
+            case 'create-abs-file':
                 $fileName = $config->getStorage()['output']['files'][0]['source'] ?? 'my-file.dat';
                 $authorization = $config->getAuthorization()['workspace'];
                 $blobClient = $this->getAbsConnection();
@@ -188,6 +188,19 @@ class Component extends BaseComponent
                     $authorization['container'],
                     'data/out/files/' . $fileName . '.manifest',
                     (string) json_encode($manifestData)
+                );
+                break;
+            case 'create-abs-table':
+                $fileName = $config->getStorage()['output']['tables'][0]['source'] ?? 'my-file.csv';
+                $authorization = $config->getAuthorization()['workspace'];
+                $blobClient = $this->getAbsConnection();
+                $blobClient->createBlockBlob($authorization['container'], 'data/out/tables/' . $fileName, "first,second\n1a,2b");
+                $options = new OutTableManifestOptions();
+                $options->setPrimaryKeyColumns(['first']);
+                $manifestManager = new ManifestManager($this->getDataDir());
+                $manifestManager->writeTableManifest(
+                    $config->getStorage()['output']['tables'][0]['source']  . '.manifest',
+                    $options
                 );
                 break;
             default:

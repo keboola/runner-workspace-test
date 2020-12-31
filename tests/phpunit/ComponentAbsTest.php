@@ -138,7 +138,7 @@ class ComponentAbsTest extends TestCase
         self::assertTrue($logger->hasInfoThatContains("Data: \"first column\",\"second column\"\n\"1\",\"2\""));
     }
 
-    public function testCreateAbs(): void
+    public function testCreateFileAbs(): void
     {
         $authorization = $this->workspace['connection'];
         $blobClient = BlobRestProxy::createBlobService($authorization['connectionString']);
@@ -149,7 +149,7 @@ class ComponentAbsTest extends TestCase
                 'workspace' => $this->workspace['connection'],
             ],
             'parameters' => [
-                'operation' => 'create-abs',
+                'operation' => 'create-abs-file',
             ],
             'storage' => [
                 'output' => [
@@ -179,6 +179,48 @@ class ComponentAbsTest extends TestCase
                     'foo',
                     'bar',
                 ],
+            ],
+            json_decode($data, true)
+        );
+    }
+
+    public function testCreateTableAbs(): void
+    {
+        $authorization = $this->workspace['connection'];
+        $blobClient = BlobRestProxy::createBlobService($authorization['connectionString']);
+        $content = '"first column","second column"' . "\n" . '"1","2"';
+        $blobClient->createBlockBlob($authorization['container'], 'data/in/tables/my-table.csv', $content);
+        $config = [
+            'authorization' => [
+                'workspace' => $this->workspace['connection'],
+            ],
+            'parameters' => [
+                'operation' => 'create-abs-table',
+            ],
+            'storage' => [
+                'output' => [
+                    'tables' => [
+                        [
+                            'source' => 'my-table.csv',
+                            'destination' => 'out.c-test-bucket.test-table'
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $temp = new Temp();
+        file_put_contents($temp->getTmpFolder() . '/config.json', json_encode($config));
+        putenv('KBC_DATADIR=' . $temp->getTmpFolder());
+        $logger = new TestLogger();
+        $component = new Component($logger);
+        $component->execute();
+        $blob = $blobClient->getBlob($authorization['container'], 'data/out/tables/my-table.csv');
+        $data = stream_get_contents($blob->getContentStream());
+        self::assertEquals("first,second\n1a,2b", $data);
+        $data = file_get_contents($temp->getTmpFolder() . '/out/tables/my-table.csv.manifest');
+        self::assertEquals(
+            [
+                'primary_key' => ['first'],
             ],
             json_decode($data, true)
         );

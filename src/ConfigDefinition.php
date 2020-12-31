@@ -11,7 +11,8 @@ class ConfigDefinition extends BaseConfigDefinition
 {
     protected function getParametersDefinition(): ArrayNodeDefinition
     {
-        $operations = ['copy', 'copy-snowflake', 'copy-synapse', 'copy-abs', 'list-abs', 'dump-abs', 'create-abs'];
+        $operations = ['copy', 'copy-snowflake', 'copy-synapse', 'copy-abs', 'list-abs', 'dump-abs',
+            'create-abs-file', 'create-abs-table'];
         $parametersNode = parent::getParametersDefinition();
         // @formatter:off
         /** @noinspection NullPointerExceptionInspection */
