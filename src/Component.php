@@ -194,7 +194,11 @@ class Component extends BaseComponent
                 $fileName = $config->getStorage()['output']['tables'][0]['source'] ?? 'my-file.csv';
                 $authorization = $config->getAuthorization()['workspace'];
                 $blobClient = $this->getAbsConnection();
-                $blobClient->createBlockBlob($authorization['container'], 'data/out/tables/' . $fileName, "first,second\n1a,2b");
+                $blobClient->createBlockBlob(
+                    $authorization['container'],
+                    'data/out/tables/' . $fileName,
+                    "first,second\n1a,2b"
+                );
                 $options = new OutTableManifestOptions();
                 $options->setPrimaryKeyColumns(['first']);
                 $manifestManager = new ManifestManager($this->getDataDir());
