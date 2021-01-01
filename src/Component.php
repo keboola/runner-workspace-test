@@ -201,6 +201,7 @@ class Component extends BaseComponent
                 );
                 $options = new OutTableManifestOptions();
                 $options->setPrimaryKeyColumns(['first']);
+                $options->setColumns(['first', 'second']);
                 $manifestManager = new ManifestManager($this->getDataDir());
                 $manifestManager->writeTableManifest(
                     $config->getStorage()['output']['tables'][0]['source']  . '.manifest',

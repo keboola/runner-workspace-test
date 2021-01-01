@@ -221,6 +221,7 @@ class ComponentAbsTest extends TestCase
         self::assertEquals(
             [
                 'primary_key' => ['first'],
+                'columns' => ['first', 'second'],
             ],
             json_decode($data, true)
         );

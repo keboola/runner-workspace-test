@@ -21,7 +21,9 @@ class ConfigDefinition extends BaseConfigDefinition
                 ->scalarNode('operation')
                     ->validate()
                         ->ifnotinarray($operations)
-                        ->thenInvalid(sprintf('Allowed operations are: "%s".', implode($operations)))
+                        ->thenInvalid(
+                            sprintf('Allowed operations are: "%s".', implode(', ', $operations))
+                        )
                     ->end()
                 ->end()
             ->end()
