@@ -11,6 +11,8 @@ class ConfigDefinition extends BaseConfigDefinition
 {
     protected function getParametersDefinition(): ArrayNodeDefinition
     {
+        $operations = ['copy', 'copy-snowflake', 'copy-synapse', 'copy-abs', 'list-abs', 'dump-abs',
+            'create-abs-file', 'create-abs-table'];
         $parametersNode = parent::getParametersDefinition();
         // @formatter:off
         /** @noinspection NullPointerExceptionInspection */
@@ -18,8 +20,10 @@ class ConfigDefinition extends BaseConfigDefinition
             ->children()
                 ->scalarNode('operation')
                     ->validate()
-                        ->ifnotinarray(['copy', 'copy-snowflake', 'copy-synapse', 'copy-abs', 'list-abs'])
-                        ->thenInvalid('Allowed operations are: "copy".')
+                        ->ifnotinarray($operations)
+                        ->thenInvalid(
+                            sprintf('Allowed operations are: "%s".', implode(', ', $operations))
+                        )
                     ->end()
                 ->end()
             ->end()
