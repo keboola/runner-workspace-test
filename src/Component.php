@@ -143,6 +143,8 @@ class Component extends BaseComponent
                 $blobClient = $this->getAbsConnection();
                 $blob = $blobClient->getBlob($authorization['container'], $source);
                 $blobClient->createBlockBlob($authorization['container'], $target, $blob->getContentStream());
+                // calling createBlockBlob causes the contentStream to be invalidated, so get the the blob again
+                $blob = $blobClient->getBlob($authorization['container'], $source);
                 $data = stream_get_contents($blob->getContentStream());
                 file_put_contents($this->getDataDir() . '/tmp.csv', $data);
                 $csvReader = new CsvFile($this->getDataDir() . '/tmp.csv');
